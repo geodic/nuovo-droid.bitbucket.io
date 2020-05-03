@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html style="overflow: auto;"><head>
+<meta http-equiv="content-type" content="text/html"; charset="UTF-8">
+<script>
+   let clicks = 0;
+   let nums = [];
+   function range(f, t){
+   	let ar = [];
+      for(let i = f; i <= t; ++i) ar.push(i);
+      /*
+   	while(f <= t){
+   		if(f > t){
+   			break;
+   		}
+   		ar.push(f);
+   		f++;
+   	}*/
+   	return ar;
+   }
+   function sleep(delay) {
+      var start = new Date().getTime();
+      while(new Date().getTime() < start + delay);
+   }
+   function make_grid(width, height){
+      console.log("in make_grid");
+      let card_count = width * height;
+      let h = 0;
+      let w = 0;
+      window.id_list = range(0, card_count-1);
+      let memory_numbers = range(1, card_count/2);
+      console.log(memory_numbers);
+      let memory_counter = 0;
+      window.memory_dictionary = [];
+      let id_counter = 0;
+      memory_numbers = shuffle(memory_numbers);
+      console.log(memory_numbers);
+      console.log("making grid...")
+      for(let h = 0; h < height; ++h ) {
+        for(let w = 0; w < width; ++w) {
+            let current_card = document.createElement("SPAN");
+            current_card.id = id_list[id_counter];
+            current_card.style = "border: 1px solid black; display: inline-block; text-align:center; overflow-left:scroll; font-size:110px; height: 100px; width: 100px; margin-left: 3px; background-color: blue; cursor:pointer;";
+            if(memory_counter > memory_numbers.length - 1){
+               memory_counter = 0;
+               memory_numbers = shuffle(memory_numbers);
+            }
+            memory_dictionary.push(memory_numbers[memory_counter]);
+            document.getElementById("cards").appendChild(current_card);
+            memory_counter ++;
+            id_counter++;
+         }
+         let br = document.createElement("BR");
+         document.getElementById("cards").appendChild(br);
+      }
+      console.log(memory_dictionary);
+   }
+   function flip(id_to_flip){
+   	document.getElementById(id_to_flip).innerHTML = memory_dictionary[id_to_flip];
+   	document.getElementById(id_to_flip).style.backgroundColor = "white";
+   }
+   function flip_back(id_to_flip_back){
+   	document.getElementById(id_to_flip_back).innerHTML = "";
+   	document.getElementById(id_to_flip_back).style.backgroundColor = "blue";
+   }
+   function choose(event){
+   	id = event.target.id
+   	console.log(id)
+   	console.log(id_list)
+   	if(id_list.includes(parseInt(id))){
+   		console.log("checking...");
+   		flip(id);
+   		console.log("done fliping")
+   		sleep(1000)
+   		if(clicks != 2 && nums.includes(id) == false){
+   			nums.push(id);
+   			clicks++;
+   		}
+   		if(clicks == 2){
+   			console.log("checking...");
+   			check();
+   			clicks = 0;
+   			nums = [];
+   		}
+   	}
+   }
+   function check(){
+   	if(memory_dictionary[nums[0]] == memory_dictionary[nums[1]]){
+   		document.getElementById(nums[0]).style.backgroundColor = "green";
+   		document.getElementById(nums[1]).style.backgroundColor = "green";
+   	}
+   	else{
+   		flip_back(nums[0]);
+   		flip_back(nums[1]);
+   	}
+   }
+
+   function decode(func){
+   	console.log("in make_grid_call")
+   	if(func == "reset"){
+   		reset_grid();
+   	}
+   	let grid_size = document.getElementById("value").value;
+   	let parts = grid_size.split('x');
+   	if(!parts || parts.length != 2) {
+   		alert('invalid card_count size');
+   		return;
+   	}
+   	let sizes = parts.map(x => Number(x.trim()));
+   	if(func == "make"){
+   		make_grid(sizes[0], sizes[1]);
+   	}
+   }
+   function shuffle(list){
+   	let shuffled_list = [];
+   	let i = 0;
+   	while(i < list.length){
+   		let index = Math.floor(Math.random() * list.length);
+   		shuffled_list.push(list[index]);
+   		list.splice(index,1);
+   	}
+   	return shuffled_list;
+   }
+   function reset_grid(){
+   	document.getElementById("cards").remove();
+   	let new_card_placer = document.createElement("DIV");
+   	new_card_placer.id = "cards";
+   	new_card_placer.addEventListener("click",choose);
+   	document.body.appendChild(new_card_placer);
+   }
+</script>
+</head>
+<body id="matcher">
+   <p>enter the card_count size, example 6x4. At least 1 number should be even. Use a x symbol to separate the numbers. </p>
+   <input type="text" id="value">
+   <button onclick="decode('make')">create</button> <button onclick="decode('reset')">reset</button><br>
+   <div id="cards" onclick="choose(event)">
+   </div>
+</body>
+</html>
