@@ -1,139 +1,253 @@
 <!DOCTYPE html>
-<html style="overflow: auto;"><head>
+<html><head>
 <meta http-equiv="content-type" content="text/html"; charset="UTF-8">
-<script>
-   let clicks = 0;
-   let nums = [];
-   function range(f, t){
-   	let ar = [];
-      for(let i = f; i <= t; ++i) ar.push(i);
-      /*
-   	while(f <= t){
-   		if(f > t){
-   			break;
-   		}
-   		ar.push(f);
-   		f++;
-   	}*/
-   	return ar;
-   }
-   function sleep(delay) {
-      var start = new Date().getTime();
-      while(new Date().getTime() < start + delay);
-   }
-   function make_grid(width, height){
-      console.log("in make_grid");
-      let card_count = width * height;
-      let h = 0;
-      let w = 0;
-      window.id_list = range(0, card_count-1);
-      let memory_numbers = range(1, card_count/2);
-      console.log(memory_numbers);
-      let memory_counter = 0;
-      window.memory_dictionary = [];
-      let id_counter = 0;
-      memory_numbers = shuffle(memory_numbers);
-      console.log(memory_numbers);
-      console.log("making grid...")
-      for(let h = 0; h < height; ++h ) {
-        for(let w = 0; w < width; ++w) {
-            let current_card = document.createElement("SPAN");
-            current_card.id = id_list[id_counter];
-            current_card.style = "border: 1px solid black; display: inline-block; text-align:center; overflow-left:scroll; font-size:110px; height: 100px; width: 100px; margin-left: 3px; background-color: blue; cursor:pointer;";
-            if(memory_counter > memory_numbers.length - 1){
-               memory_counter = 0;
-               memory_numbers = shuffle(memory_numbers);
-            }
-            memory_dictionary.push(memory_numbers[memory_counter]);
-            document.getElementById("cards").appendChild(current_card);
-            memory_counter ++;
-            id_counter++;
-         }
-         let br = document.createElement("BR");
-         document.getElementById("cards").appendChild(br);
-      }
-      console.log(memory_dictionary);
-   }
-   function flip(id_to_flip){
-   	document.getElementById(id_to_flip).innerHTML = memory_dictionary[id_to_flip];
-   	document.getElementById(id_to_flip).style.backgroundColor = "white";
-   }
-   function flip_back(id_to_flip_back){
-   	document.getElementById(id_to_flip_back).innerHTML = "";
-   	document.getElementById(id_to_flip_back).style.backgroundColor = "blue";
-   }
-   function choose(event){
-   	id = event.target.id
-   	console.log(id)
-   	console.log(id_list)
-   	if(id_list.includes(parseInt(id))){
-   		console.log("checking...");
-   		flip(id);
-   		console.log("done fliping")
-   		sleep(1000)
-   		if(clicks != 2 && nums.includes(id) == false){
-   			nums.push(id);
-   			clicks++;
-   		}
-   		if(clicks == 2){
-   			console.log("checking...");
-   			check();
-   			clicks = 0;
-   			nums = [];
-   		}
-   	}
-   }
-   function check(){
-   	if(memory_dictionary[nums[0]] == memory_dictionary[nums[1]]){
-   		document.getElementById(nums[0]).style.backgroundColor = "green";
-   		document.getElementById(nums[1]).style.backgroundColor = "green";
-   	}
-   	else{
-   		flip_back(nums[0]);
-   		flip_back(nums[1]);
-   	}
-   }
-
-   function decode(func){
-   	console.log("in make_grid_call")
-   	if(func == "reset"){
-   		reset_grid();
-   	}
-   	let grid_size = document.getElementById("value").value;
-   	let parts = grid_size.split('x');
-   	if(!parts || parts.length != 2) {
-   		alert('invalid card_count size');
-   		return;
-   	}
-   	let sizes = parts.map(x => Number(x.trim()));
-   	if(func == "make"){
-   		make_grid(sizes[0], sizes[1]);
-   	}
-   }
-   function shuffle(list){
-   	let shuffled_list = [];
-   	let i = 0;
-   	while(i < list.length){
-   		let index = Math.floor(Math.random() * list.length);
-   		shuffled_list.push(list[index]);
-   		list.splice(index,1);
-   	}
-   	return shuffled_list;
-   }
-   function reset_grid(){
-   	document.getElementById("cards").remove();
-   	let new_card_placer = document.createElement("DIV");
-   	new_card_placer.id = "cards";
-   	new_card_placer.addEventListener("click",choose);
-   	document.body.appendChild(new_card_placer);
-   }
-</script>
+<title>Memory Game</title>
+<style>
+.card{
+   border: 1px solid black;
+   display: inline-block;
+   text-align: center;
+   overflow:auto;
+   font-size:110px;
+   height: 100px;
+   width: 100px;
+   margin-left: 3px;
+   background-color: blue;
+   cursor:pointer;
+   user-select: none;
+}
+#note{
+   display: inline;
+   background-color: white;
+}
+#card_holder{
+   white-space: nowrap;
+   overflow-x: auto;
+}
+@keyframes alert{
+	0%{opacity:0;}
+	50%{opacity:1;}
+}
+@keyframes flip{
+  from{transform: rotateY(180deg);}
+  to{transform: rotateY(0deg);}
+}
+@keyframes flip_back{
+   from{transform: rotateY(0deg);}
+   to{transform: rotateY(180deg);}
+}
+</style>
 </head>
 <body id="matcher">
-   <p>enter the card_count size, example 6x4. At least 1 number should be even. Use a x symbol to separate the numbers. </p>
+   <h1>Memory Game</h1>
+   <h4 id="stars">star rating: </h4>
+   <h4 id="moves">moves: </h4>
+   <br>
+   <noscript> <p style="animation:alert 3s; opacity:1; height:200px; width:200px; background-color:rgba(34,206,206,0.5); border:1px solid black; text-align:center;" id="1">javascript is disabled please enable it and reload the page</p> </noscript>
+   <p id="note" >enter the card_count size, example 6x4. At least 1 number should be even. Use a x symbol to separate the numbers. </p>
+   <br>
    <input type="text" id="value">
-   <button onclick="decode('make')">create</button> <button onclick="decode('reset')">reset</button><br>
-   <div id="cards" onclick="choose(event)">
+   <button id="create">create</button>
+   <button id="reset">reset</button><br>
+   <div id="card_holder">
    </div>
+   <script>
+   (function() {
+      alert("⚠️ \n \n \n don't open the inspector,console,debugger,network,style editor,preformence,memory,storage,accesibility,whats new, or any other extention programs that you have , before the page has fully loaded");
+      console.warn("⚠️ don't open the inspector,console,debugger,network,style editor,preformence,memory,storage,accesibility,whats new, or any other extention programs that you have , before the page has fully loaded");
+      let blocks_per_height = ((window.innerHeight / 103) | 0) - 1;
+      let blocks_per_width = (window.innerWidth / 103) | 0;
+      document.getElementById("note").innerHTML += " your screen can fit about " + blocks_per_width + "x" + blocks_per_height + " grid." ;
+      let clicks = 0;
+      let nums = [];
+      let i;
+      let memory_dictionary = [];
+      let id_list = [];
+      let counter = 0;
+      let starr = "";
+      let stars = document.getElementById('stars');
+      let moves = document.getElementById('moves');
+      let card_count;
+      let done = true;
+      moves.innerHTML += counter;
+      stars.innerHTML += starr;
+      document.getElementById("create").addEventListener("click",
+      function(){
+         decode("create");
+      });
+      document.getElementById("reset").addEventListener("click",
+      function(){
+         decode("reset");
+      });
+      decode("reset");
+      document.getElementById("card_holder").addEventListener("click",choose);
+      function range(f, t){
+         let ar = [];
+         for(let i = f; i <= t; ++i) ar.push(i);
+         return ar;
+      }
+      function sleep(delay) {
+         var start = new Date().getTime();
+         while(new Date().getTime() < start + delay);
+      }
+      function make_grid(width, height){
+         console.log("in make_grid");
+         starr = "⭐⭐⭐"
+         stars.innerHTML = "star rating: " + starr;
+         card_count = width * height;
+         let h = 0;
+         let w = 0;
+         let memory_numbers = range(1, card_count/2);
+         console.log(memory_numbers);
+         done = true;
+         id_list = range(0, card_count-1);
+         let memory_counter = 0;
+         let id_counter = 0;
+         memory_numbers = memory_numbers.concat(memory_numbers);
+         memory_numbers = shuffle(memory_numbers);
+         memory_dictionary = [];
+         memory_dictionary = memory_numbers.concat();
+         console.log(memory_numbers);
+         console.log("making grid...");
+         for(let h = 0; h < height; ++h ) {
+           for(let w = 0; w < width; ++w) {
+               let current_card = document.createElement("DIV");
+               current_card.id = id_list[id_counter];
+               current_card.className = "card";
+               document.getElementById("card_holder").appendChild(current_card);
+               memory_counter ++;
+               id_counter++;
+            }
+            let br = document.createElement("BR");
+            document.getElementById("card_holder").appendChild(br);
+         }
+         console.log(memory_dictionary);
+      }
+      function flip(id_to_flip){
+         document.getElementById(id_to_flip).style.animation = "flip 0.5s";
+         setTimeout(function(){
+         document.getElementById(id_to_flip).innerHTML = memory_dictionary[id_to_flip];
+         document.getElementById(id_to_flip).style.backgroundColor = "white";
+         },150)
+      }
+      function flip_back(id_to_flip_back){
+         document.getElementById(id_to_flip_back).style.animation = "flip_back 0.5s";
+         setTimeout(function(){
+            document.getElementById(id_to_flip_back).innerHTML = "";
+            document.getElementById(id_to_flip_back).style.backgroundColor = "blue";
+         },150)
+      }
+      function choose(event){
+         let id = event.target.id;
+         console.log(id);
+         console.log(id_list);
+         if(id_list.includes(parseInt(id)) && document.getElementById(id).style.backgroundColor != "green"){
+            console.log("checking...");
+            flip(id);
+            console.log("done fliping");
+            if(clicks != 2 && nums.includes(id) == false){
+               console.log("skiped");
+               counter++;
+               moves.innerHTML = "moves: " + counter;
+               if(counter >= (card_count / 2 | 0) + card_count + 3){
+                  starr = "⭐";
+                  console.log(starr);
+                  stars.innerHTML = "star rating: " + starr;
+               }
+               else if(counter >= (card_count / 4 | 0) + card_count + 2){
+                  starr = "⭐⭐";
+                  console.log(starr);
+                  stars.innerHTML = "star rating: " + starr;
+               }
+               else{
+                  starr = "⭐⭐⭐";
+                  console.log(starr);
+                  stars.innerHTML = "star rating: " + starr;
+               }
+               nums.push(id);
+               console.log(nums);
+               clicks++;
+            }
+            if(clicks == 2){
+               console.log("checking...");
+               console.log("in clicks");
+               done = true;
+               setTimeout(function(){
+                  for(i of document.querySelector("#card_holder").childNodes){
+                     if(i.style.backgroundColor != "green" && i.nodeName != "BR" && i.nodeName != "#text"){
+                        console.log(i);
+                        done = false;
+                        break;
+                     }
+
+                  }
+                  console.log(done);
+                  if(done){
+                     alert(" you won! \n \n star rating: " + starr + "\n \n moves: " + counter);
+                     decode("reset");
+                  }
+               },1500)
+               setTimeout(check,1000);
+            }
+         }
+      }
+      function check(){
+         if(memory_dictionary[parseInt(nums[0])] == memory_dictionary[parseInt(nums[1])]){
+            console.log("right " + nums + " " + memory_dictionary);
+            document.getElementById(nums[0]).style.backgroundColor = "green";
+            document.getElementById(nums[1]).style.backgroundColor = "green";
+            clicks = 0;
+            nums = [];
+         }
+         else{
+            flip_back(nums[0]);
+            flip_back(nums[1]);
+            clicks = 0;
+            nums = [];
+         }
+      }
+
+      function decode(func){
+         console.log("in make_grid_call");
+         counter = 0;
+         starr = "";
+         moves.innerHTML = "moves: " + counter;
+         stars.innerHTML = "star rating: " + starr;
+         if(func == "reset"){
+            console.log("reseting.....");
+            reset_grid();
+            return;
+         }
+         let grid_size = document.getElementById("value").value;
+         let parts = grid_size.split('x');
+         if(!parts || parts.length != 2) {
+            alert('invalid card_count size');
+            console.error('invalid card_count size');
+            return;
+         }
+         let sizes = parts.map(x => Number(x.trim()));
+         if(func == "create"){
+            make_grid(sizes[0], sizes[1]);
+         }
+      }
+      function shuffle(list){
+         let shuffled_list = [];
+         let i = 0;
+         while(i < list.length){
+            let index = Math.floor(Math.random() * list.length);
+            shuffled_list.push(list[index]);
+            list.splice(index,1);
+         }
+         return shuffled_list;
+      }
+      function reset_grid(){
+         document.getElementById("card_holder").remove();
+         let new_card_placer = document.createElement("DIV");
+         new_card_placer.id = "card_holder";
+         new_card_placer.addEventListener("click",choose);
+         document.body.appendChild(new_card_placer);
+      }
+   })();
+   </script>
 </body>
 </html>
