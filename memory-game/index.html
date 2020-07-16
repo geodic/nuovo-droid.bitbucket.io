@@ -1,174 +1,272 @@
 <!DOCTYPE html>
 <html><head>
-<meta http-equiv="content-type" content="text/html"; charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8" http-equiv="content-type">
 <title>Memory Game</title>
+<link rel="icon" type="image/x-image" href="../ffk-icon.jpg">
+<link href='https://fonts.googleapis.com/css?family=ABeeZee' rel='stylesheet'>
 <style>
-.card{
-   border: 1px solid black;
-   display: inline-block;
-   overflow:hidden;
-   text-align: center;
-   font-size:80px;
-   height: 100px;
-   width: 100px;
-   margin-left: 3px;
-   background-color: blue;
-   cursor:pointer;
-   user-select: none;
-   line-height: 100px;
-   border-radius: 10px;
-}
-#note{
-   display: inline;
-   background-color: white;
-}
-#card_holder{
-   white-space: nowrap;
-   overflow-x: auto;
-}
-@keyframes alert{
-	0%{opacity:0;}
-	50%{opacity:1;}
-}
-@keyframes flip{
-  from{transform: rotateY(180deg);}
-  to{transform: rotateY(0deg);}
-}
-@keyframes flip_back{
-   from{transform: rotateY(0deg);}
-   to{transform: rotateY(180deg);}
-}
-.levels span{
-   color:gray;
-   cursor:pointer;
-   user-select: none;
-}
-.levels span:hover{
-   text-decoration: underline;
-}
-.app-root{
-   display: flex;
-   background-color: blue;
-   font-size: 23pt;
-   color:#ffffff;
-}
-.app-root > #stars{
-   margin-left: 1em;
-   margin-right: 1em;
-}
-.levels{
-   font-size: 20px;
-}
-.alert{
-   background-color: rgba(0,0,0,0.7);
-   height: 100%;
-   width: 100%;
-   position:absolute;
-   z-index: 1;
-   top:0;
-   left:0;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-}
-.text-alert{
-   min-width: 288px;
-   min-height: 150px;
-   max-width: 6in;
-   border-radius: 3px;
-   background-color: white;
-   border: 2px solid rgb(201,200,206);
-}
-.title{
-   height:30px;
-   width:98%;
-   background-color: rgb(201,200,206);
-   font-size: 22pt;
-   border-radius: 3px;
-   margin-left: 3px;
-   margin-top: 3px;
-}
-.text{
-   hyphens: auto;
-   min-width: 288px;
-   min-height: 90px;
-   max-width: 6in;
-   background-color: white;
-}
-.buttons{
-   min-height:30px;
-   width:98%;
-   background-color: rgb(201,200,206);
-   font-size: 22pt;
-   border-radius: 3px;
-   margin-left: 3px;
-   margin-top: 3px;
-   display: flex;
-   flex-wrap: wrap;
-}
-.button{
-   margin: 10px
-}
-.more{
-   height:30px;
-   width:30px;
-}
-@keyframes slidein {
-   from{height: 100%; width:0px;display:none;}
-   to{height: 100%; width:25%;display:inline;visibility:visible;}
-}
-@keyframes slideout {
-      from{height: 100%; width:25%;display:inline;}
-      to{height: 100%; width:0px;display:none;visibility:hidden;}
-}
-.side{
-   height:100%;
-   width:0px;
-   overflow: hidden;
-   position:absolute;
-   z-index: 1;
-   background-color: white;
-   visibility:hidden;
-}
+   .card{
+      border: 1px solid black;
+      display: inline-flex;
+      overflow:hidden;
+      text-align: center;
+      font-size:80px;
+      height: 100px;
+      width: 100px;
+      background-color: blue;
+      cursor:pointer;
+      user-select: none;
+      border-radius: 10px;
+      vertical-align: middle;
+      margin: 1.5px;
+      justify-content: center;
+      align-items: center
+   }
+   .card > img {
+    height: 100%;
+    width: 100%;
+    display: block;
+   }
+   #note{
+      display: flex;
+      background-color: white;
+      justify-content: center;
+      margin: 0;
+   }
+   #card_holder{
+      white-space: nowrap;
+      overflow-x: auto;
+   }
+   @keyframes alert{
+   	0%{opacity:0;}
+   	50%{opacity:1;}
+   }
+   @keyframes flip{
+     from{transform: rotateY(180deg);}
+     to{transform: rotateY(0deg);}
+   }
+   @keyframes flip_back{
+      from{transform: rotateY(0deg);}
+      to{transform: rotateY(180deg);}
+   }
+   .levels span{
+      cursor:pointer;
+      user-select: none;
+   }
+   .levels span:hover{
+      text-decoration: underline;
+   }
+   .app-root{
+      display: flex;
+      background-color: blue;
+      font-size: 16pt;
+      color:#ffffff;
+      padding: 0.25em 0;
+      justify-content: center;
+   }
+   .app-root > #stars{
+      margin: 0 0.25em;
+   }
+   .app-root > #time{
+      margin: 0 0.25em;
+   }
+   .app-root > #moves{
+      margin: 0 0.25em;
+   }
+   .app-root > #title{
+      font-weight: bold;
+      margin: 0 0.25em;
+   }
+   .levels{
+      font-size: 20px;
+      font-family: 'ABeeZee';
+   }
+   .levels-label{
+      font-size: 20px;
+      font-family: 'ABeeZee';
+   }
+   .alert{
+      background-color: rgba(0,0,0,0.7);
+      height: 100%;
+      width: 100%;
+      position:absolute;
+      z-index: 1;
+      top:0;
+      left:0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+   }
+   .text-alert{
+      min-width: 288px;
+      min-height: 150px;
+      max-width: 6in;
+      border-radius: 3px;
+      background-color: white;
+      border: 2px solid rgb(201,200,206);
+   }
+   .title{
+      height:30px;
+      width:98%;
+      background-color: rgb(201,200,206);
+      font-size: 22pt;
+      border-radius: 3px;
+      margin-left: 3px;
+      margin-top: 3px;
+   }
+   .text{
+      hyphens: auto;
+      min-width: 288px;
+      min-height: 90px;
+      max-width: 6in;
+      background-color: white;
+   }
+   .buttons{
+      min-height:30px;
+      width:98%;
+      background-color: rgb(201,200,206);
+      font-size: 22pt;
+      border-radius: 3px;
+      margin-left: 3px;
+      margin-top: 3px;
+      display: flex;
+      flex-wrap: wrap;
+   }
+   .button{
+      margin: 10px
+   }
+   .more{
+      height:30px;
+      width:30px;
+      background-color: white;
+      margin:0.1em;
+   }
+   @keyframes slidein {
+      from{height: 100%; width:0px;display:none;}
+      to{height: 100%; width:25%;display:inline;visibility:visible;}
+   }
+   @keyframes slideout {
+         from{height: 100%; width:25%;display:inline;}
+         to{height: 100%; width:0px;display:none;visibility:hidden;}
+   }
+   .side{
+      height:100%;
+      width:0px;
+      overflow: hidden;
+      position:absolute;
+      z-index: 1;
+      background-color: white;
+      visibility:hidden;
+      border: 1px solid black;
+   }
+   #card_holder_container{
+      display:flex;
+      justify-content: center;
+   }
+   #levels-holder{
+      display: flex;
+      justify-content: center;
+   }
+   #selector-container{
+      display: flex;
+      justify-content: center;
+   }
+
+   @media only screen and (min-width: 360px) {
+     .card {
+        height: 100px;
+        width: 100px;
+     }
+     :root{
+        --expert-grid-size: 6x4
+     }
+     .levels-label{
+        font-size: 20px;
+     }
+     .levels{
+       font-size: 20px;
+     }
+   }
+
+   @media only screen and (max-width: 360px) {
+     .card{
+        height: 72px;
+        width: 72px;
+     }
+     :root{
+       --expert-grid-size: 4x6
+     }
+     .levels-label{
+       font-size: 16px;
+     }
+     .levels{
+       font-size: 16px;
+     }
+   }
+
+   #loaded_images{
+      display: none;
+      height: 0px;
+      width: 0px;
+   }
 </style>
 </head>
 <body id="matcher" style="margin:0px;">
-   <div class = "app-root">
-   <div>Memory Game</div>
-   <div id="stars">Star Rating: </div>
-   <div id="moves">Moves: </div>
+   <div class="app-root">
+      <!--<img src="https://cdn0.iconfinder.com/data/icons/railway-app/48/for-railway-app-expand_menu-512.png" class="more"/>-->
+      <div id="title">Memory Game</div> -
+      <div id="moves"></div> -
+      <div id="time"></div> -
+      <div id="stars"><span class="star"></span><span class="star"></span><span class="star"></span> </div>
    </div>
-   <div class = "side">
-      <button class="close">x</button><br>
+   <div id="loaded_images"></div>
+   <div class="side">
+      <button class="close">&times</button><br>
       <a download="memory_game.html" id="download">download memory_game</a>
    </div>
-   <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.logolynx.com%2Fimages%2Flogolynx%2F0e%2F0e0133e58d41ff3ceb3eef095df532fd.png&f=1&nofb=1" class="more"><br>
-   <em>Thank you pexels for such nice photots and thank you whoever's photos these are </em>
    <br>
    <noscript> <p style="animation:alert 3s; opacity:1; height:200px; width:200px; background-color:rgba(34,206,206,0.5); border:1px solid black; text-align:center;" id="1">javascript is disabled please enable it and reload the page</p> </noscript>
    <p id="note" ></p>
+
    <br>
-   <div class="levels">Levels: <span class="beg">beginner</span> <span class="inter">intermediate</span> <span class="expert">expert</span> <span class = "custom">custom</span><span id = "custom" style="display:none;"><input type="text" id="value" placeholder="enter the  (e.g. 6x4)">
-   <button id="reset">reset</button></span></div> <button class = "nums">numbers</button> <button class = "img">images</button><br><br>
+   <div id="levels-holder">
+   <span class="levels-label">Levels: </span>
+   <span class="levels"><span class="level beg" data-level="beginner">Beginner
+      </span><span class="level inter" data-level="intermediate">Intermediate
+      </span><span class="level expert" data-level="expert">Expert
+      </span><span class="level custom" data-level="custom">Custom
+      </span><span id="custom" style="display:none;">
+         <input type="text" id="value" placeholder="enter grid size (e.g. 6x4)"/>
+         <button id="reset">reset</button>
+      </span>
+   </span>
+   </div>
+   <div id="selector-container">
+      <div>
+         <button class = "nums">Numbers</button>
+         <button class = "img">Images</button>
+      </div>
+   </div>
+   <br><br>
+   <div id="card_holder_container">
    <div id="card_holder">
+   </div>
    </div>
    <script>
    (function() {
-      let animal_names = [
-         'barn-owl-1.png', 'bear-1.png', 'beaver-1.png', 'buffalo-1.png', 'camel-1.png',
-         'cheetah-1.png', 'chicken-1.png', 'dog-1.png', 'elephant-1.png', 'fox-1.png',
-         'hippo-1.png', 'horse-1.png', 'kangaroo-3.png', 'koala-1.png', 'ladybug-1.png',
-         'lion-1.png', 'ostrich-1.png', 'panda-bear-1.png', 'parrot-1.png', 'pig-1.png',
-         'pigeon-1.png', 'rabbit-1.png', 'ram-1.png', 'rat-1.png', 'reindeer-1.png',
-         'snail-1.png', 'tiger-1.png', 'turtle-1.png'
-      ];
+      let animal_names = ['barn-owl-1.png', 'bear-1.png', 'beaver-1.png', 'buffalo-1.png', 'camel-1.png',
+               'cheetah-1.png', 'chicken-1.png', 'dog-1.png', 'elephant-1.png', 'fox-1.png',
+               'hippo-1.png', 'horse-1.png', 'kangaroo-3.png', 'koala-1.png', 'ladybug-1.png',
+               'lion-1.png', 'ostrich-1.png', 'panda-bear-1.png', 'parrot-1.png', 'pig-1.png',
+               'pigeon-1.png', 'rabbit-1.png', 'ram-1.png', 'rat-1.png', 'reindeer-1.png',
+               'snail-1.png', 'tiger-1.png', 'turtle-1.png'
+            ];
       //alert("⚠️ \n \n \n don't open the inspector,console,debugger,network,style editor,preformence,memory,storage,accesibility,whats new, or any other extention programs that you have , before the page has fully loaded");
       function Jalert(message,title,delay,buttons){
          message = message || "nothing to display";
          title = title || "Alert";
          delay = delay || false;
          buttons = buttons || false;
-         console.log("custom alert")
          let alert = document.createElement("DIV");
          alert.className = "alert";
          document.body.appendChild(alert);
@@ -207,50 +305,57 @@
             }, delay);
          }
       }
-      console.warn("⚠️ don't open the inspector,console,debugger,network,style editor,preformence,memory,storage,accesibility,whats new, or any other extention programs that you have , before the page has fully loaded");
+      //console.warn("⚠️ don't open the inspector,console,debugger,network,style editor,preformence,memory,storage,accesibility,whats new, or any other extention programs that you have , before the page has fully loaded");
       let blocks_per_height = ((window.innerHeight / 103) | 0) - 1;
       let blocks_per_width = (window.innerWidth / 103) | 0;
       document.getElementById("note").innerHTML += " your screen can fit about " + blocks_per_width + "x" + blocks_per_height + " ." ;
       let clicks = 0;
       let nums = [];
-      let i;
-      let mode = "nums";
+      let mode = "img";
       let memory_dictionary = [];
       let id_list = [];
       let counter = 0;
-      let starr = "";
       let stars = document.getElementById('stars');
       let moves = document.getElementById('moves');
+      let timer = document.getElementById('time');
+      let time = [0,0];
+      let time_tracker;
+      timer.innerHTML = (time[0].toString().length == 1 ? "0" + time[0].toString():time[0].toString())  + ":" +  (time[1].toString().length == 1 ? "0" + time[1].toString():time[1].toString());
       let card_count;
       let levels = ["beg","expert","inter","custom"];
       let done = true;
       let level;
-      moves.innerHTML += counter;
-      stars.innerHTML += starr;
+      let load = true;
+      let first_open = true;
+      moves.innerHTML == counter;
       let pics = [];
-      let file = "";
-      i = 0;
-      for(i of animal_names){
-         file = "../memory-game/images/" + i;
-         pics.push(file);
-      }
-      i = 0;
-      console.log(pics);
+      animal_names.forEach(function(file_name){
+         let path = "images/" + file_name;
+         pics.push(path);
+      });
+      //set the download link to window.location
       document.querySelector("#download").href = window.location;
+      //add the evenet listener for the reset button
       document.getElementById("reset").addEventListener("click",
       function(){
+         //when the user clicks the reset button reset the grid
          decode("reset");
       });
+      //add the event listener for the close  button on the more sidebar which is disabled for now.
       document.querySelector(".close").addEventListener("click",function(){
          el = document.querySelector(".side");
          el.style.animation = "slideout 1s";
          el.style.animationFillMode = "forwards";
       })
+      //event listener for the more sidebar
+      /*
       document.querySelector(".more").addEventListener("click",function(){
          el = document.querySelector(".side");
          el.style.animation = "slidein 1s";
          el.style.animationFillMode = "forwards";
       })
+      */
+      // add the event listener for the input to listen for a keypress and detect if its a enter; the detection is in the function that I am calling.
       document.querySelector("#value").addEventListener("keypress",function(){
          decode("create",event)
       })
@@ -263,23 +368,21 @@
       document.querySelector(".expert").addEventListener("click",function(){
          document.querySelector("#custom").style.display = "none";
          nonselectall("expert");
-         make_grid(6,4);
+         let style = getComputedStyle(document.body);
+         size = style.getPropertyValue('--expert-grid-size').trim().split("x").map(x => parseInt(x))
+         make_grid(size[0],size[1]);
          level="expert";
       })
       document.querySelector(".img").addEventListener("click",function(){
          mode = "img";
-         console.log("imgs",mode)
          document.querySelector("#value").placeholder = "max " + pics.length * 2  + " cards";
          document.querySelector("." + level).click();
-         console.log();
-         console.log();
          if(level == "custom"){
             decode("create");
          }
       })
       document.querySelector(".nums").addEventListener("click",function(){
          mode = "nums";
-         console.log("nums",mode);
          document.querySelector("#value").placeholder = "enter the  (e.g. 6x4)";
          document.querySelector("." + level).click();
          if(level == "custom"){
@@ -326,16 +429,29 @@
          for(let i = f; i <= t; ++i) ar.push(i);
          return ar;
       }
-   /*
-   function sleep(delay) {
+      /*
+      function sleep(delay) {
          var start = new Date().getTime();
          while(new Date().getTime() < start + delay);
       }//*/
-      function make_grid(width, height){// function to make the
+      function remove_list(list,part){
+         part.forEach(function(item){
+            list.splice(list.indexOf(item),1)
+         })
+        return list;
+      }
+      function make_grid(width, height){// function to make the grid
          decode("reset");
-         console.log("in make_grid");
-         starr = "⭐⭐⭐" // the star rating is always set to 3 when a new gid is made
-         stars.innerHTML = "Star Rating: " + starr;
+         starr = "⭐⭐⭐"
+         time = [0,0];
+         clearInterval(time_tracker);
+         timer.innerHTML = (time[0].toString().length == 1 ? "0" + time[0].toString():time[0].toString())  + ":" +  (time[1].toString().length == 1 ? "0" + time[1].toString():time[1].toString());
+         stars.childNodes.forEach(function(item){
+            if(item.nodeName != "#text"){
+               item.innerHTML = "⭐";
+               item.style.opacity = "1";
+            }
+         });// the star rating is always set to 3 when a new grid is made
          card_count = width * height;
          let h = 0;
          let w = 0;
@@ -343,28 +459,44 @@
          nums = [];
          id_list = range(0, card_count-1);
          done = true;
+         first_open = true;
          let memory_counter = 0;
          let id_counter = 0;
          memory_dictionary = [];
          if(mode == "nums"){
-            console.log(mode);
-            console.log("hello");
-            console.log(`card_count : ${card_count}`)
             let memory_numbers = range(1, card_count/2);
             memory_numbers = memory_numbers.concat(memory_numbers);
             memory_numbers = shuffle(memory_numbers);
             memory_dictionary = memory_numbers.concat();
+            if(check_repitition(memory_dictionary) > card_count / 2){
+               make_grid(width,height);
+            }
          }
          else {
             pics = shuffle(pics);
-            let memory_imgs = pics.slice(0 , (card_count / 2));
-            console.log(memory_imgs);
+            let memory_imgs = pics.slice(0 , (card_count / 2));;
+            if(load == true){
+               console.group("Image loading info")
+               let loading_images = memory_imgs.concat()
+               let img_loader = setInterval(function(){
+                  let img = document.createElement("IMG");
+                  console.info(`loading image: ${loading_images[loading_images.length   -1]}`);
+                  img.src = loading_images[loading_images.length   -1];
+                  loading_images.pop()
+                  if(loading_images.length == 0){
+                     clearInterval(img_loader)
+                  }
+                  document.getElementById('loaded_images').appendChild(img);
+               },500);
+            }
             memory_imgs = memory_imgs.concat(memory_imgs);
             memory_imgs = shuffle(memory_imgs);
             memory_dictionary = memory_imgs.concat()
-            console.log(memory_imgs);
+            if(check_repitition(memory_dictionary) != card_count / 2){
+               make_grid(width,height);
+            }
          }
-         console.log("making ...");
+         console.info("making grid...");
          for(let h = 0; h < height; ++h ) {
            for(let w = 0; w < width; ++w) {
                let current_card = document.createElement("DIV");
@@ -378,7 +510,25 @@
             let br = document.createElement("BR");
             document.getElementById("card_holder").appendChild(br);
          }
-         console.log(memory_dictionary);
+         if(load == true){
+            loading_images = remove_list(pics.concat(),[...new Set(memory_dictionary)]).concat()
+            setTimeout(function(){
+               img_loader = setInterval(function(){
+                  let img = document.createElement("IMG");
+                  console.info(`loading image: ${loading_images[loading_images.length   -1]}`);
+                  img.src = loading_images[loading_images.length - 1];
+                  loading_images.pop()
+                  if(loading_images.length == 0){
+                     clearInterval(img_loader)
+                  }
+                  document.getElementById('loaded_images').appendChild(img);
+                  load = false;
+               },500);
+            },4000)
+            setTimeout(function(){
+               console.groupEnd();
+            },14500)
+         }
       }
       function flip(id_to_flip){
          document.getElementById(id_to_flip).style.animation = "flip 0.5s";
@@ -387,8 +537,7 @@
                document.getElementById(id_to_flip).innerHTML = memory_dictionary[document.getElementById(id_to_flip).dataset.number];
             }
             else{
-               document.getElementById(id_to_flip).innerHTML = "<img src = " + memory_dictionary[document.getElementById(id_to_flip).dataset.number] + " height='100px' width='100px'>";
-               console.log(memory_dictionary[id_to_flip]);
+               document.getElementById(id_to_flip).innerHTML = `<img src = "${memory_dictionary[document.getElementById(id_to_flip).dataset.number]}">`;
             }
             document.getElementById(id_to_flip).style.backgroundColor = "white";
          },150)
@@ -402,66 +551,74 @@
       }
       function choose(event){
          let id = event.target.id;
-         console.log(id);
-         console.log(id_list);
-         if(id_list.includes(parseInt(id.replace("card-",""))) && document.getElementById(id).style.backgroundColor != "green"){
-            console.log("checking...");
+         if(id_list.includes(parseInt(id.replace("card-",""))) &&
+           document.getElementById(id).style.backgroundColor != "green" &&
+           clicks != 2
+         ){
             flip(id);
-            console.log("done fliping");
-            if(clicks != 2 && nums.includes(id) == false){
-               console.log("skiped");
-               counter++;
-               moves.innerHTML = "Moves: " + counter;
-               if(counter <= card_count + (card_count / 2) ){
-                  starr = "⭐⭐⭐";
-                  console.log(starr);
-                  stars.innerHTML = "Star Rating: " + starr;
-               }
-               else if(counter >= card_count * 2){
-                  starr = "⭐";
-                  console.log(starr);
-                  stars.innerHTML = "Star Rating: " + starr;
-               }
-               else{
-                  starr = "⭐⭐";
-                  console.log(starr);
-                  stars.innerHTML = "Star Rating: " + starr;
-               }
-               nums.push(id);
-               console.log(nums);
-               clicks++;
-            }
-            if(clicks == 2){
-               console.log("checking...");
-               console.log("in clicks");
-               done = true;
-               setTimeout(function(){
-                  for(i of document.querySelector("#card_holder").childNodes){
-                     if(i.style.backgroundColor != "green" && i.nodeName != "BR" && i.nodeName != "#text"){
-                        console.log(i);
-                        done = false;
-                        break;
+            paused = false;
+            if(first_open == true){
+               time_tracker = setInterval(function() {
+                  if(! paused){
+                     if(time[1] == 60 && time[2] != 59){
+                  		time[1] = 0;
+                  		time[0] += 1
                      }
+                     else if(time[1] == 59 && time[0] == 59){
+                        //too much time elapsed
+                        console.error("Too much time elapsed");
+                        paused = true;
+                     }
+                     time[1] += 1
+                     timer.innerHTML = (time[0].toString().length == 1 ? "0" + time[0].toString():time[0].toString())  + ":" +  (time[1].toString().length == 1 ? "0" + time[1].toString():time[1].toString());
+                  }
+               }, 1000);
+            }
+            first_open = false;
+            counter++;
+            moves.innerHTML = counter;
+            if(counter <= card_count + (card_count / 2) ){
+               starr = "⭐⭐⭐";
+            }
+            else if(counter >= card_count * 2){
+               starr = "⭐";
+               stars.childNodes[1].style.opacity = "0.3";
+            }
+            else{
+               starr = "⭐⭐";
+               stars.childNodes[2].style.opacity = "0.3";
+            }
+            nums.push(id);
+            clicks++;
+         }
+         if(clicks == 2){
+            done = true;
+            setTimeout(function(){
+               let card_elements = document.querySelectorAll("#card_holder > .card");
+               for(let card_element of card_elements){
+                  if(card_element.style.backgroundColor != "green"){
+                     done = false;
+                     break;
+                  }
 
+               }
+               // if the board is solved
+               if(done){
+                  clearInterval(time_tracker);
+                  Jalert("You Won! <br> <br> Star Rating: " + starr + "<br> <br> Moves: " + counter + "<br> <br> Time: " + (time.join(":")), "<div style='color:orange;'>You Won!</div>",4000);
+                  decode("reset");
+                  time = [0,0];
+                  document.querySelector("." + level).click();
+                  if(level == "custom"){
+                     decode("create")
                   }
-                  console.log(done);
-                  // if the board is solved
-                  if(done){
-                     Jalert("You Won! <br> <br> Star Rating: " + starr + "<br> <br> Moves: " + counter , "<div style='color:orange;'>You Won!</div>",4000);
-                     decode("reset");
-                     document.querySelector("." + level).click();
-                     if(level == "custom"){
-                        decode("create")
-                     }
-                  }
-               },1500)
-               setTimeout(check,500);
-            }
+               }
+            },1500)
+            setTimeout(check,500);
          }
       }
       function check(){
          if(memory_dictionary[parseInt(document.getElementById(nums[0]).dataset.number)] == memory_dictionary[parseInt(document.getElementById(nums[1]).dataset.number)]){
-            console.log("right " + nums + " " + memory_dictionary);
             document.getElementById(nums[0]).style.backgroundColor = "green";
             document.getElementById(nums[1]).style.backgroundColor = "green";
             clicks = 0;
@@ -476,16 +633,13 @@
       }
 
       function decode(func,event){ // function to decode what the user enters
-         console.log(mode);
-         console.log("in make_grid_call");
          event = event || false;
          counter = 0;
          starr = "";
-         moves.innerHTML = "Moves: " + counter;
-         stars.innerHTML = "Star Rating: " + starr;
+         moves.innerHTML = counter;
          //check if the  function is reset
          if(func == "reset"){
-            console.log("reseting.....");
+            console.info("reseting grid.....");
             reset_grid();
             return;
          }
@@ -493,7 +647,6 @@
          let parts = grid_size.split('x');
          let sizes = parts.map(x => Number(x.trim()));
          if (event != false) {
-            console.log((event.which == 13) ? true : false);
             if(event.which == 13){
                if(mode == "img"){
                   if(!parts || parts.length != 2 && parseInt(sizes[0]) * parseInt(sizes[1])  > 2 * pics.length || !parts || parts.length != 2 || parseInt(sizes[0]) * parseInt(sizes[1])  > 2 * pics.length) {
@@ -505,9 +658,7 @@
                else{
                   if(!parts || parts.length != 2) {
                      console.error("InputError: Invalid  size");
-                     console.log("error");
                      Jalert("<p style='color:red'>InputError: Invalid  size</p>","Error",4000);
-                     console.log("alerting...")
                      return;
                   }
                }
@@ -520,21 +671,16 @@
          }
          else{
             if(mode == "img"){
-               console.log("mode is img")
                if(!parts || parts.length != 2 && parseInt(sizes[0]) * parseInt(sizes[1])  > 2 * pics.length || !parts || parts.length != 2 || parseInt(sizes[0]) * parseInt(sizes[1])  > 2 * pics.length) {
                   console.error("InputError: Invalid  size");
-                  console.log("error");
                   Jalert("<p style='color:red'>InputError: Invalid  size</p>","Error",4000);
-                  console.log("alerting...")
                   return;
                }
             }
             else{
                if(!parts || parts.length != 2) {
                   console.error("InputError: Invalid  size");
-                  console.log("error");
                   Jalert("<p style='color:red'>InputError: Invalid  size</p>","Error",4000);
-                  console.log("alerting...")
                   return;
                }
             }
@@ -543,6 +689,9 @@
             reset_grid()
             make_grid(sizes[0], sizes[1]);
          }
+      }
+      function check_repitition(list){
+         return list.length - new Set(list).size;
       }
       function shuffle(list){
          let shuffled_list = [];
@@ -561,7 +710,7 @@
          let new_card_placer = document.createElement("DIV");
          new_card_placer.id = "card_holder";
          new_card_placer.addEventListener("click",choose);
-         document.body.appendChild(new_card_placer);
+         document.getElementById('card_holder_container').appendChild(new_card_placer);
       }
    })();
    </script>
