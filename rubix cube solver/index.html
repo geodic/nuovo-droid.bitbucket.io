@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <style>
+         #x-image{
+            height:100px;
+            width: 100px;
+            animation: shake 10s;
+            animation-iteration-count: infinite;
+            position: relative;
+            z-index: 1;
+         }
+
+         @keyframes shake {
+            0%{transform: rotate(0deg);}
+            10%{transform: rotate(360deg);}
+            20%{transform: scale3d(1.3, 1.3, 1.3);}
+         }
+         #notsupportedmessage{
+            position:relative;
+            z-index:0;
+         }
+         #browsernotsupported{
+            display:none;
+         }
+         #video{
+            max-height: 156px;
+            max-width:210px;
+            position: relative;
+            display: none;
+         }
+         .video-container{
+            width: 156px;
+            position:absolute;
+            overflow: hidden;
+
+         }
+         #grid{
+            position: absolute;
+            height: 156px;
+            width: 156px;
+            top: 0;
+            left: 0;
+            z-index: 2;
+         }
+         .scan-cell{
+            width: 20px;
+            height: 20px;
+            margin: 16px;
+            border: 1px solid green;
+            display: inline-block;
+            font-size: 0px;
+            box-sizing: border-box;
+         }
+         #rubix-cube{
+            display:inline-block;
+         }
+         .cube{
+            display: inline-block;
+            height: 50px;
+            width: 50px;
+            background-color:black;
+            margin:1px;
+         }
+         .cuberow{
+            font-size: 0px;
+         }
+         #rcs{
+         }
+      </style>
+   </head>
+   <body>
+      <div id="browsernotsupported"><img id="x-image" src="index_files/X-image.png">
+         <p id="notsupportedmessage">
+            sorry your browser doesn't support getting video from a camera
+         </p>
+      </div>
+      <div id="rubix-cube">
+         <div class="cuberow"><div class="cube"></div><div class="cube"></div><div class="cube"></div></div><div class="cuberow"><div class="cube"></div><div class="cube"></div><div class="cube"></div></div><div class="cuberow"><div class="cube"></div><div class="cube"></div><div class="cube"></div></div>
+      </div>
+      <p id="hsl"></p>
+      <div class="video-container">
+         <div id="grid">
+            <div class="scan-cell"></div><div class="scan-cell"></div><div class="scan-cell"></div><div class="scan-cell"></div><div class="scan-cell"></div><div class="scan-cell"></div><div class="scan-cell"></div><div class="scan-cell"></div><div class="scan-cell"></div>
+         </div>
+         <canvas id="rcs"></canvas>
+         <!-- id='rcs' stands for rubik's cube scanner -->
+      </div>
+      <video id="video"></video>
+      <script>
+         (async function(){
+            function rgbtohue(rgbArr){
+               let huelist = [];
+               for(rgb of rgbArr){
+                var r1 = rgb[0] / 255;
+                var g1 = rgb[1] / 255;
+                var b1 = rgb[2] / 255;
+
+                var maxColor = Math.max(r1,g1,b1);
+                var minColor = Math.min(r1,g1,b1);
+                //Calculate L:
+                var H = 0;
+                if(maxColor != minColor){
+                    //Calculate H:
+                    if(r1 == maxColor){
+                        H = (g1-b1) / (maxColor - minColor);
+                    }else if(g1 == maxColor){
+                        H = 2.0 + (b1 - r1) / (maxColor - minColor);
+                    }else{
+                        H = 4.0 + (r1 - g1) / (maxColor - minColor);
+                    }
+                }
+
+                H = H * 60;
+                if(H<0){
+                    H += 360;
+                }
+                huelist.push(parseInt(H))
+             }
+             return huelist;
+            }
+            function group(list,clump){
+               let nlist = [];
+               list = list.concat()
+               for(let i = 0, e = list.length / clump ; i < e; i++){
+                  nlist.push(list.splice(0,clump));
+               }
+               return nlist
+            }
+            rcs = document.getElementById('rcs')
+            rcs.width = '156';
+            rcs.height = '156';
+            let ctx = rcs.getContext("2d");
+            let cubes = document.getElementsByClassName('cube');
+            cubes = Array.from(cubes)
+            let gcubes = group(cubes,3)
+            if(navigator.mediaDevices == undefined){
+               document.querySelector("#browsernotsupported").style.display = "inline";
+               return;
+            }
+            video = document.getElementById("video");
+            try{
+               stream = await navigator.mediaDevices.getUserMedia(
+                  {video: true}
+               );
+               video.srcObject = stream;
+               video.play();
+               setInterval(function(){
+                  ctx.drawImage(video,0,0,208,156);
+                  let x = 26;
+                  let y = 26;
+                  for(let h = 0; h < 3; ++h ) {
+                    for(let w = 0; w < 3; ++w) {
+                        let color = "black"
+                        let green = true;
+                        let red = true;
+                        let blue = true;
+                        let orange = true;
+                        let white = true;
+                        let yellow = true;
+                        for(hue of rgbtohue(group(Array.from(ctx.getImageData(x - 10,y - 10,20,20).data),4))){
+                           if(hue >= 90 && hue <= 150 && green){
+                              color = "#00FF00";
+                              continue;
+                           }
+                           else{
+                              green = false;
+                              color = "black"
+                           }
+
+                           if(hue >= 150 && hue <= 240 && blue){
+                              color = "#0000FF";
+                              continue;
+                           }
+                           else{
+                              blue = false;
+                              color = "black"
+                           }
+
+                           if(hue >= 30 && hue <= 90 && yellow){
+                              color = "#FFFF00";
+                              continue;
+                           }
+                           else{
+                              yellow = false;
+                              color = "black";
+                           }
+
+                           if(hue >= 5 && hue <= 30 && orange){
+                              color = "#FF8000";
+                              continue;
+                           }
+                           else{
+                              orange = false;
+                              color = "black"
+                           }
+                           if(((hue >= 1 && hue <= 5) || (hue >= 255 && hue <= 360)) && red){
+                              color = "#FF0000";
+                              continue;
+                           }
+                           else{
+                              red = false;
+                              color = "black"
+                           }
+                        }
+                        gcubes[h][w].style.backgroundColor = color;
+                        x += 52;
+                     }
+                     y += 52;
+                     x = 26;
+                  }
+               },100);
+            }
+            catch(err){
+               console.log(err.name);
+            }
+         })()
+      </script>
+
+
+
+
+</body></html>
