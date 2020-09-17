@@ -5,10 +5,24 @@
 <link rel="icon" type="image/x-image" href="../ffk-icon.jpg">
 <link href='https://fonts.googleapis.com/css?family=ABeeZee' rel='stylesheet'>
 <style>
+   html{
+      user-select: none;
+   }
+   @font-face {
+      font-family: 'ABeeZee';
+      font-style: normal;
+      font-weight: 400;
+      src: local('ABeeZee Regular'), local('ABeeZee-Regular'), url(https://fonts.gstatic.com/s/abeezee/v14/esDR31xSG-6AGleN2tWkkA.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+   }
    .adBanner {
        background-color: transparent;
        height: 1px;
        width: 1px;
+   }
+   .star{
+      height: 21.333333333333332px;
+      width: 21.333333333333332px;
    }
    .card{
       border: 1px solid black;
@@ -20,7 +34,6 @@
       width: 100px;
       background-color: blue;
       cursor:pointer;
-      user-select: none;
       border-radius: 10px;
       vertical-align: middle;
       margin: 1.5px;
@@ -50,7 +63,6 @@
    }
    .levels span{
       cursor:pointer;
-      user-select: none;
    }
    .levels span:hover{
       text-decoration: underline;
@@ -64,7 +76,9 @@
       justify-content: center;
    }
    .app-root > #stars{
-      margin: 0 0.25em;
+      margin: 0 5.3333px;
+      font-size: 0;
+      align-self: center;
    }
    .app-root > #time{
       margin: 0 0.25em;
@@ -149,8 +163,8 @@
          to{height: 100%; width:0px;display:none;visibility:hidden;}
    }
    .side{
-      height:100%;
-      width:0px;
+      display:block;
+      width: 0;
       overflow: hidden;
       position:absolute;
       z-index: 1;
@@ -208,24 +222,12 @@
       height: 0px;
       width: 0px;
    }
-   #abi{
-      position:fixed;
-      display: flex;
-      bottom: 0;
-      width:100%;
-      height:15%;
-      justify-content: center;
-      background-color: #d9d9d5;
+   .credits{
+      position: absolute;
+      z-index: -100;
+      font-size: 8pt;
+      margin: 0 calc((100vw - 110.3px) / 2)
    }
-   #close {
-    position: absolute;
-    right: 0;
-    top: 0;
-    left: 99%;
-    font-size: x-large;
-    user-select: none;
-    cursor: pointer;
- }
 </style>
 </head>
 <body id="matcher" style="margin:0px;">
@@ -234,7 +236,7 @@
       <div id="title">Memory Game</div> -
       <div id="moves"></div> -
       <div id="time"></div> -
-      <div id="stars"><span class="star"></span><span class="star"></span><span class="star"></span> </div>
+      <div id="stars"><img class="star" src = "images/star.png"/><img class="star" src = "images/star.png"/><img class="star" src = "images/star.png"/> </div>
    </div>
    <div id="loaded_images"></div>
    <div class="side">
@@ -264,13 +266,13 @@
    </div>
    <br><br>
    <div id="card_holder_container">
-   <div id="card_holder">
+      <div id="card_holder">
+      </div>
    </div>
-   </div>
-   <div id="abi">hey<div id="close">&times</div></div>
+   <div class="credits">Images provided by <a href="https://www.freepik.com/brgfx" target="_blank">brgfx</a></div>
    <script>
    (function() {
-      class timeformater extends String{
+      class Timeformater extends String{
         constructor(time){
           super(time)
           this.time = time
@@ -281,13 +283,8 @@
       }
 
       document.body.innerHTML += '<div class="adBanner"></div>';
-      if(document.getElementsByClassName("adBanner")[0].offsetHeight > 0){
-         document.getElementById('abi').style.display = "none"
-      }
-      else{
-         document.querySelector("#abi > #close").addEventListener("click",function(){
-            this.parentElement.style.display = "none"
-         })
+      if(document.getElementsByClassName("adBanner")[0].offsetHeight ){
+         //pass
       }
       let animal_names = ['barn-owl-1.png', 'bear-1.png', 'beaver-1.png', 'buffalo-1.png', 'camel-1.png',
                'cheetah-1.png', 'chicken-1.png', 'dog-1.png', 'elephant-1.png', 'fox-1.png',
@@ -354,7 +351,7 @@
       let timer = document.getElementById('time');
       let time = [0,0];
       let time_tracker;
-      timer.innerHTML = new timeformater(time[0]).format()  + ":" +  new timeformater(time[1]).format();
+      timer.innerHTML = new Timeformater(time[0]).format()  + ":" +  new Timeformater(time[1]).format();
       let card_count;
       let levels = ["beg","expert","inter","custom"];
       let done = true;
@@ -493,10 +490,9 @@
          starr = "⭐⭐⭐"
          time = [0,0];
          clearInterval(time_tracker);
-         timer.innerHTML = new timeformater(time[0]).format()  + ":" +  new timeformater(time[1]).format();;
+         timer.innerHTML = new Timeformater(time[0]).format()  + ":" +  new Timeformater(time[1]).format();;
          stars.childNodes.forEach(function(item){
             if(item.nodeName != "#text"){
-               item.innerHTML = "⭐";
                item.style.opacity = "1";
             }
          });// the star rating is always set to 3 when a new grid is made
@@ -620,14 +616,14 @@
                         paused = true;
                      }
                      time[1] += 1
-                     timer.innerHTML = new timeformater(time[0]).format()  + ":" +  new timeformater(time[1]).format();
+                     timer.innerHTML = new Timeformater(time[0]).format()  + ":" +  new Timeformater(time[1]).format();
                   }
                }, 1000);
             }
             first_open = false;
             counter++;
             moves.innerHTML = counter;
-            if(counter <= card_count + (card_count / 2) && time[1]){
+            if(counter <= card_count + (card_count / 2)){
                starr = "⭐⭐⭐";
             }
             else if(counter >= card_count * 2){
@@ -655,7 +651,7 @@
                // if the board is solved
                if(done){
                   clearInterval(time_tracker);
-                  Jalert("You Won! <br> <br> Star Rating: " + starr + "<br> <br> Moves: " + counter + "<br> <br> Time: " + (time.join(":")), "<div style='color:orange;'>You Won!</div>",4000);
+                  //Jalert("You Won! <br> <br> Star Rating: " + starr + "<br> <br> Moves: " + counter + "<br> <br> Time: " + new Timeformater(time[0]).format() + ":" + new Timeformater(time[1]).format(), "<div style='color:orange;'>You Won!</div>",4000);
                   decode("reset");
                   time = [0,0];
                   document.querySelector("." + level).click();
